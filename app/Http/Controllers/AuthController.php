@@ -22,23 +22,23 @@ class AuthController extends Controller
             'password' => 'required|string|min:8'
         ]);
 
-    if ($validator->fails()) {
-        return response()->json($validator->errors());
-    };
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        };
 
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password)
-    ]);
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password)
+        ]);
 
-    $token = $user->createToken('auth_token')->plainTextToken;
-    
-    return response()->json([
-        'data' => $user,
-        'access_token' => $token,
-        'token_type' => 'Bearer'
-    ]);
+        $token = $user->createToken('auth_token')->plainTextToken;
+        
+        return response()->json([
+            'data' => $user,
+            'access_token' => $token,
+            'token_type' => 'Bearer'
+        ]);
 
     }
 
@@ -61,6 +61,17 @@ class AuthController extends Controller
             'accessToken' => $token,
             'tokenTypo' => 'Bearer',
             'userData' => $user
+        ]);
+    }
+
+    // lOGOUT //
+
+    public function logout () {
+
+        auth()->user()->tokens()->delete();
+        
+        return response()->json([
+            'message' => 'Tokes y metodos de autenticacion eliminados mi perro'
         ]);
 
     }
