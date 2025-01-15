@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Validator;
 
 class ProductController extends Controller
 {
@@ -14,10 +15,32 @@ class ProductController extends Controller
     {
         //
 
-        $product = Product::all();
+        $products = Product::all();
+        //products = Product::select('name', 'description')->get();
 
-        return $product;
-        //return response()->json($product);
+        //return $product;
+        return response()->json($products);
+    }
+
+    public function onlyProduct(Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|numeric',
+        ]); 
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        };
+
+        $findProuct = Product::find($request->id);
+
+        if (!$findProuct) {
+            return response()->json([
+                'message' => 'El producto no existe mi perro!'
+            ], 404);
+        }
+
+        return $findProuct;
     }
 
     /**
@@ -42,6 +65,11 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         //
+        return response()->json([
+            'message' => 'Producto encontrado',
+            'product' => $product
+        ]);
+        
     }
 
     /**

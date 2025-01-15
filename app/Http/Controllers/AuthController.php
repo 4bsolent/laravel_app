@@ -73,6 +73,12 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Tokes y metodos de autenticacion eliminados mi perro'
         ]);
+    }
+
+    // UPDATE //
+
+    public function update (Request $request) {
+
 
     }
 }
