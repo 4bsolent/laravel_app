@@ -22,6 +22,8 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
+    // CUSTOM FUNCTION - PROBANDO LARAVEL //
+
     public function onlyProduct(Request $request) {
 
         $validator = Validator::make($request->all(), [
@@ -32,15 +34,15 @@ class ProductController extends Controller
             return response()->json($validator->errors());
         };
 
-        $findProuct = Product::find($request->id);
+        $findProduct = Product::find($request->id);
 
-        if (!$findProuct) {
+        if (!$findProduct) {
             return response()->json([
                 'message' => 'El producto no existe mi perro!'
             ], 404);
         }
 
-        return $findProuct;
+        return $findProduct;
     }
 
     /**
@@ -83,9 +85,41 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request)
     {
         //
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|numeric',
+            'name' => 'required|string|max:100',
+            'description' => 'required|string|max:255'
+        ]);
+
+        if ($validator->fails()) {
+           return response()->json([
+            'message' => 'Mi perro los criterios no se cumplieros',
+            'errors' => $validator->errors(),
+           ], 422);
+        }
+
+        $findProduct = Product::find($request->id);
+
+        if (!$findProduct) {
+            return response()->json([
+                'message' => 'El producto no existe mi perro!'
+            ], 404);
+        }
+
+        $findProduct->update([
+            'name' => $request->name,
+            'description' => $request->description
+        ]);
+
+        return response()->json([
+            'message' => 'El producto fue actualizado correctamente',
+            'newProductData' => $findProduct
+        ]);
+
     }
 
     /**
